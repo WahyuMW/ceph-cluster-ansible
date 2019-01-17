@@ -120,5 +120,5 @@ Change this varible with varible you use in hosts file.
 ## Running This Playbook
 
 ```
-$ ansible-playbook ceph.yml -k -K
+$ ansible-playbook ceph.yml -k -K -u user
 ```
