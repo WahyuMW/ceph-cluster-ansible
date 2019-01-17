@@ -1,0 +1,38 @@
+---
+
+# - name: add line config 
+#   lineinfile:
+#     path: /etc/ceph/ceph.conf
+#     state: present
+#     line: 'rgw_reshard_thread_interval = 86400'
+
+# - name: add line config 
+#   lineinfile:
+#     path: /etc/ceph/ceph.conf
+#     state: present
+#     line: 'rgw_dynamic_resharding = false'
+
+# - name: add line config 
+#   lineinfile:
+#     path: /etc/ceph/ceph.conf
+#     state: present
+#     line: 'rgw_max_objs_per_shard = 400000'
+
+# - name: add line config 
+#   lineinfile:
+#     path: /etc/ceph/ceph.conf
+#     state: present
+#     line: 'rgw_reshard_bucket_lock_duration = 30'
+
+- name: add line config 
+  lineinfile:
+    path: /etc/ceph/ceph.conf
+    state: present
+    line: 'log_file = /var/log/ceph/ceph.client.radosgw.log'
+
+- name: restart ceph rgw
+  command: systemctl restart ceph.target
+
+- name: pause 60 second
+  pause: 
+    seconds: 60

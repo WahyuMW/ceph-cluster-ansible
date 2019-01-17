@@ -1,0 +1,54 @@
+---
+
+- name: make cephuser
+  user:
+    name: cephuser
+    state: present
+    shell: /bin/bash
+    password: 
+
+
+- name: make nonpassword sudo user cephuser
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    line: 'cephuser ALL=(ALL) NOPASSWD:ALL'
+
+
+- name: set timezone to Asia/Jakarta
+  timezone:
+    name: Asia/Jakarta
+
+- name: install prerequisite
+  apt: 
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items: 
+  - ntp
+  - apt-transport-https
+  - vim
+  - htop
+  - net-tools
+
+- name: copy file hosts
+  copy: src=files/hosts-test dest=/etc/hosts
+
+- name: Creates directory .ssh
+  file: 
+    path: /home/cephuser/.ssh/ 
+    state: directory
+    owner: cephuser
+
+# - name: make config file
+#   copy: 
+#     src: files/config 
+#     dest: /home/cephuser/.ssh/config
+#     owner: cephuser
+  
+- name: copy file hosts
+  copy: 
+    src: /tmp/ceph-anisble-id_rsa.pub
+    dest: /home/cephuser/.ssh/authorized_keys
+    owner: cephuser
+  

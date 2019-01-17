@@ -1,0 +1,25 @@
+---
+#CEPH_NODE:
+# - 'ceph-mon-0'
+# - 'ceph-mgr-0'
+# - 'ceph-adm-0'
+CEPH_OSD:
+ - 'ceph-osd-0'
+ - 'ceph-osd-1'
+ - 'ceph-osd-2'
+CEPH_ADM:
+ - 'ceph-adm-0'
+CEPH_MON:
+ - ceph-mon-0
+CEPH_MGR:
+ - 'ceph-mgr-0'
+##uncomment this if you want deploy mds
+#CEPH_MDS:
+#  - mdsserver0
+##uncomment this if you want deploy rgw
+#CEPH_RGW:
+#  - rgwserver0
+CEPH_OSD_DISK:
+ - 'ceph-osd-0:/dev/sdb'
+ - 'ceph-osd-1:/dev/sdb'
+ - 'ceph-osd-2:/dev/sdb'

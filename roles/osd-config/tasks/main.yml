@@ -1,0 +1,31 @@
+---
+# - name: backup previous config
+#   command: mv /etc/ceph/ceph.conf /etc/ceph/ceph.conf.bk-16-11-2018
+
+- name: replace previous config
+  copy: 
+    src: files/ceph-jason.conf
+    dest: /etc/ceph/ceph.conf
+
+# - name: restart ceph 
+#   systemd:
+#     name: ceph.target
+#     state: restarted 
+
+# - name: stop ceph 
+#   systemd:
+#     name: ceph.target
+#     state: stopped
+
+# - name: pause 15 seconds
+#   pause: 
+#     seconds: 15
+
+- name: start ceph 
+  systemd:
+    name: ceph.target
+    state: restarted  
+    
+- name: pause 300 seconds
+  pause: 
+    seconds: 300

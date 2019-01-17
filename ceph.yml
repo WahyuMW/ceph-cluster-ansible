@@ -1,0 +1,50 @@
+---
+
+#####reconfigure#####
+
+# - hosts: rgw
+#   become: yes
+#   serial: 1
+#   roles:
+#     - rgw-config
+    
+# - hosts: adm
+#   become: yes
+#   tasks:
+#     - name: set cluster no out
+#       command: ceph osd set noout
+
+# - hosts: mon
+#   become: yes
+#   serial: 1
+#   roles:
+#     - mon-config
+
+# - hosts: osd
+#   become: yes
+#   serial: 1
+#   roles:
+#     - osd-config
+
+
+# - hosts: adm
+#   become: yes
+#   tasks:
+#     - name: unset cluster no out
+#       command: ceph osd unset noout
+# #####
+
+- hosts: adm
+  become: yes
+  roles: 
+    - ceph-adm-preparation
+
+- hosts: ceph-test
+  become: yes
+  roles: 
+    - node-preparation
+
+- hosts: adm
+  become: yes
+  roles: 
+    - ceph-adm

@@ -1,0 +1,20 @@
+127.0.0.1		localhost
+::1    			localhost ip6-localhost ip6-loopback
+ff02::1 		ip6-allnodes
+ff02::2 		ip6-allrouters
+
+
+192.168.220.125	ceph-test-mon-1
+192.168.220.126	ceph-test-mon-2
+192.168.220.127	ceph-test-mon-3
+
+192.168.220.131	ceph-test-osd-1
+192.168.220.132 ceph-test-osd-2
+192.168.220.133	ceph-test-osd-3
+192.168.220.134	ceph-test-osd-4
+192.168.220.135	ceph-test-osd-5
+
+192.168.220.136 ceph-test-mgr-1
+
+192.168.220.137 ceph-test-rgw-1
+192.168.220.138 ceph-test-rgw-2

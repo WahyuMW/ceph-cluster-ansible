@@ -1,0 +1,98 @@
+---
+- name: Add Ceph key
+  apt_key: 
+    url: https://download.ceph.com/keys/release.asc
+    state: present
+  when: ansible_distribution == "Debian"
+
+- name: install ceph apt-repository
+  apt_repository:
+    repo: "deb https://download.ceph.com/debian-jewel/ {{ ansible_distribution_release }} main"
+    filename: ceph
+    state: present
+
+- name: installing ceph-deploy 1.5
+  apt: 
+    name: ceph-deploy=1.5.*
+    state: present
+    update_cache: yes
+
+- name: setup monitoring node
+  shell: su - cephuser -c 'ceph-deploy new {{ item }}'
+  loop: "{{ CEPH_MON }}"
+
+- name: add replication factor default size
+  lineinfile:
+    path: /home/cephuser/ceph.conf
+    state: present
+    line: 'osd pool default size = 3'
+    owner: cephuser
+
+- name: add replication factor default min size
+  lineinfile:
+    path: /home/cephuser/ceph.conf
+    state: present
+    line: 'osd pool default min size = 2'
+    owner: cephuser
+
+- name: installing ceph on monitoring node
+  shell: su - cephuser -c 'ceph-deploy install --mon --release luminous {{ item }}'
+  loop: "{{ CEPH_MON }}"
+
+- name: installing ceph on manager node
+  shell: su - cephuser -c 'ceph-deploy install --mgr --release luminous {{ item }}'
+  loop: "{{ CEPH_MGR }}"
+
+- name: installing ceph on osd node
+  shell: su - cephuser -c 'ceph-deploy install --osd --release luminous {{ item }}'
+  loop: "{{ CEPH_OSD }}"
+
+- name: installing ceph on admin node
+  shell: su - cephuser -c 'ceph-deploy install --cli --release luminous {{ item }}'
+  loop: "{{ CEPH_ADM }}"
+
+#uncomment this if you want deploy mds
+- name: installing ceph on mds node
+ shell: su - cephuser -c 'ceph-deploy install --mds --release luminous {{ item }}'
+ loop: "{{ CEPH_MDS }}"
+
+#uncomment this if you want deploy rgw
+- name: installing ceph on rgw node
+ shell: su - cephuser -c 'ceph-deploy install --rgw --release luminous {{ item }}'
+ loop: "{{ CEPH_RGW }}"
+
+- stat: path=/home/cephuser/initialmonitoringisinstalled
+  register: cephcluster
+
+- name: enable monitoring
+  shell: su - cephuser -c 'ceph-deploy mon create-initial'
+  when: cephcluster.stat.exists == False
+
+- name: make tag file to initial monitoring node is installed
+  file:
+    path: /home/cephuser/initialmonitoringisinstalled
+    state: touch
+  when: cephcluster.stat.exists == False
+
+- name: pull key from monitor
+  shell: su - cephuser -c 'ceph-deploy gatherkeys {{ item }}'
+  loop: "{{ CEPH_MON }}"
+
+- name: push key to admin
+  shell: su - cephuser -c 'ceph-deploy admin {{ item }}'
+  loop: "{{ CEPH_ADM }}"
+
+- name: change mod keyring for admin 
+  shell: chmod +r /etc/ceph/ceph.client.admin.keyring
+
+- name: create osd
+  shell: su - cephuser -c 'ceph-deploy osd create {{ item }}'
+  loop: "{{ CEPH_OSD_DISK }}"
+
+- name: create mgr
+  shell: su - cephuser -c 'ceph-deploy mgr create {{ item }}'
+  loop: "{{CEPH_MGR }}"
+
+##uncomment this if you want deploy mds
+- name: create mds
+ shell: ceph-deploy mds create "{{ CEPH_MDS }}"

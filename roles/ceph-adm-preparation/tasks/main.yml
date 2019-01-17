@@ -1,0 +1,14 @@
+---
+- name: make cephuser 
+  user:
+    name: cephuser
+    state: present
+    shell: /bin/bash
+    generate_ssh_key: yes
+    password: 
+
+- name: fetch ssh key
+  fetch:
+    src: /home/cephuser/.ssh/id_rsa.pub
+    dest: /tmp/ceph-anisble-id_rsa.pub
+    flat: yes
